@@ -102,6 +102,106 @@ section.surface-bg { background: var(--surface); }
 .hamburger.open span { background: var(--text) !important; }
 
 /* ============================================
+   LANGUAGE SWITCHER (FR/EN)
+   ============================================ */
+.toolbar-actions{ display:flex; align-items:center; gap:10px; }
+.lang-btn{
+  width:40px; height:40px; display:flex; align-items:center; justify-content:center;
+  cursor:pointer; background:none; border:none; padding:0;
+  font-size:18px; line-height:1;
+  color: var(--text);
+  position: relative; z-index: 1100;
+}
+.toolbar.dark-mode .lang-btn{ color:#FDFCFA; }
+
+.lang-menu{
+  position: fixed;
+  top: 62px;
+  right: 28px;
+  z-index: 1200;
+  min-width: 190px;
+  padding: 12px;
+  background: rgba(253,252,250,0.92);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  box-shadow: 0 18px 50px rgba(0,0,0,0.12);
+  opacity: 0;
+  transform: translateY(-6px) scale(0.98);
+  pointer-events: none;
+  transition: opacity 0.18s ease, transform 0.18s ease;
+}
+.toolbar.dark-mode + .lang-menu{
+  background: rgba(26,26,26,0.92);
+  border-color: rgba(255,255,255,0.08);
+  box-shadow: 0 18px 50px rgba(0,0,0,0.30);
+}
+.lang-menu.open{
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  pointer-events: auto;
+}
+.lang-menu-title{
+  font-family: var(--sans);
+  font-weight: 500;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  margin-bottom: 10px;
+}
+.toolbar.dark-mode + .lang-menu .lang-menu-title{ color: rgba(253,252,250,0.65); }
+
+.lang-option{
+  width: 100%;
+  display:flex;
+  align-items:center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 10px 10px;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  font-family: var(--sans);
+  font-size: 14px;
+  color: var(--text);
+  cursor: pointer;
+  transition: background 0.18s ease, border-color 0.18s ease;
+}
+.toolbar.dark-mode + .lang-menu .lang-option{ color: #FDFCFA; }
+.lang-option:hover{
+  background: rgba(139,115,85,0.10);
+  border-color: rgba(139,115,85,0.18);
+}
+.toolbar.dark-mode + .lang-menu .lang-option:hover{
+  background: rgba(168,147,111,0.14);
+  border-color: rgba(168,147,111,0.22);
+}
+.lang-option.active{
+  background: rgba(139,115,85,0.14);
+  border-color: rgba(139,115,85,0.28);
+}
+.toolbar.dark-mode + .lang-menu .lang-option.active{
+  background: rgba(168,147,111,0.18);
+  border-color: rgba(168,147,111,0.32);
+}
+.lang-option::after{
+  content: '';
+  width: 10px; height: 10px;
+  border-radius: 999px;
+  border: 1.5px solid currentColor;
+  opacity: 0.55;
+}
+.lang-option.active::after{
+  opacity: 1;
+  box-shadow: inset 0 0 0 3px currentColor;
+}
+@media (max-width: 520px){
+  .lang-menu{ right: 16px; top: 60px; min-width: 170px; }
+}
+
+/* ============================================
    SLIDE-IN MENU
    ============================================ */
 .menu-overlay {
@@ -618,9 +718,19 @@ body.edit-mode [data-field]:focus {
      ============================================ -->
 <div class="toolbar" id="toolbar">
   <span class="toolbar-brand">Villa Dija</span>
-  <button class="hamburger" id="hamburger" aria-label="Menu">
-    <span></span><span></span><span></span>
-  </button>
+  <div class="toolbar-actions">
+    <button class="hamburger" id="hamburger" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+    <button class="lang-btn" id="langBtn" aria-label="Language menu" aria-haspopup="true" aria-expanded="false">🌐</button>
+  </div>
+</div>
+
+<!-- LANGUAGE MENU -->
+<div class="lang-menu" id="langMenu" role="menu" aria-hidden="true">
+  <div class="lang-menu-title" data-i18n="lang_header">Language</div>
+  <button class="lang-option" type="button" data-lang="en" role="menuitemradio" aria-checked="false">English (EN)</button>
+  <button class="lang-option" type="button" data-lang="fr" role="menuitemradio" aria-checked="false">Français (FR)</button>
 </div>
 
 <!-- FIREBASE COLLABORATIVE TOOLBAR -->
@@ -674,52 +784,52 @@ body.edit-mode [data-field]:focus {
   <div class="menu-nav">
 
     <div class="menu-group">
-      <span class="menu-group-label">Introduction</span>
-      <a href="#hero" class="menu-item" data-section="hero"><span class="menu-icon">◈</span> Overview</a>
-      <a href="#executive" class="menu-item" data-section="executive"><span class="menu-icon">◇</span> Executive Summary</a>
+      <span class="menu-group-label" data-i18n="nav_group_intro">Introduction</span>
+      <a href="#hero" class="menu-item" data-section="hero"><span class="menu-icon">◈</span> <span data-i18n="nav_overview">Overview</span></a>
+      <a href="#executive" class="menu-item" data-section="executive"><span class="menu-icon">◇</span> <span data-i18n="nav_exec_summary">Executive Summary</span></a>
     </div>
 
     <div class="menu-group">
-      <span class="menu-group-label">The Asset</span>
-      <a href="#resort" class="menu-item" data-section="resort"><span class="menu-icon">◈</span> The Resort</a>
-      <a href="#resort" class="menu-sub-item">Resort Video</a>
-      <a href="#resort" class="menu-sub-item">Strategic Location</a>
-      <a href="#property" class="menu-item" data-section="property"><span class="menu-icon">◇</span> The Property</a>
-      <a href="#property" class="menu-sub-item">Configuration & Amenities</a>
-      <a href="#collection" class="menu-sub-item">The Collection</a>
-      <a href="#wellness" class="menu-item" data-section="wellness"><span class="menu-icon">◇</span> Spa & Wellness</a>
-      <a href="#wellness" class="menu-sub-item">Villa Dija Rituals</a>
+      <span class="menu-group-label" data-i18n="nav_group_asset">The Asset</span>
+      <a href="#resort" class="menu-item" data-section="resort"><span class="menu-icon">◈</span> <span data-i18n="nav_resort">The Resort</span></a>
+      <a href="#resort" class="menu-sub-item"><span data-i18n="nav_resort_video">Resort Video</span></a>
+      <a href="#resort" class="menu-sub-item"><span data-i18n="nav_location">Strategic Location</span></a>
+      <a href="#property" class="menu-item" data-section="property"><span class="menu-icon">◇</span> <span data-i18n="nav_property">The Property</span></a>
+      <a href="#property" class="menu-sub-item"><span data-i18n="nav_config_amenities">Configuration & Amenities</span></a>
+      <a href="#collection" class="menu-sub-item"><span data-i18n="nav_collection">The Collection</span></a>
+      <a href="#wellness" class="menu-item" data-section="wellness"><span class="menu-icon">◇</span> <span data-i18n="nav_spa_wellness">Spa & Wellness</span></a>
+      <a href="#wellness" class="menu-sub-item"><span data-i18n="nav_rituals">Villa Dija Rituals</span></a>
     </div>
 
     <div class="menu-group">
-      <span class="menu-group-label">Business Model</span>
-      <a href="#revenue" class="menu-item" data-section="revenue"><span class="menu-icon">◈</span> Revenue Streams</a>
-      <a href="#stream1" class="menu-sub-item">Stream 01 — Private Hire</a>
-      <a href="#stream2" class="menu-sub-item">Stream 02 — Wellness Retreats</a>
-      <a href="#personas" class="menu-item" data-section="personas"><span class="menu-icon">◇</span> Guest Personas</a>
+      <span class="menu-group-label" data-i18n="nav_group_business">Business Model</span>
+      <a href="#revenue" class="menu-item" data-section="revenue"><span class="menu-icon">◈</span> <span data-i18n="nav_revenue_streams">Revenue Streams</span></a>
+      <a href="#stream1" class="menu-sub-item"><span data-i18n="nav_stream1">Stream 01 — Private Hire</span></a>
+      <a href="#stream2" class="menu-sub-item"><span data-i18n="nav_stream2">Stream 02 — Wellness Retreats</span></a>
+      <a href="#personas" class="menu-item" data-section="personas"><span class="menu-icon">◇</span> <span data-i18n="nav_personas">Guest Personas</span></a>
     </div>
 
     <div class="menu-group">
-      <span class="menu-group-label">Financials</span>
-      <a href="#financials" class="menu-item" data-section="financials"><span class="menu-icon">◈</span> Financial Overview</a>
-      <a href="#financials" class="menu-sub-item">Revenue Summary</a>
-      <a href="#financials" class="menu-sub-item">Expenses & Team</a>
-      <a href="#financials" class="menu-sub-item">Profitability & Cash Flow</a>
-      <a href="#team" class="menu-item" data-section="team"><span class="menu-icon">◇</span> Operations & Team</a>
+      <span class="menu-group-label" data-i18n="nav_group_financials">Financials</span>
+      <a href="#financials" class="menu-item" data-section="financials"><span class="menu-icon">◈</span> <span data-i18n="nav_fin_overview">Financial Overview</span></a>
+      <a href="#financials" class="menu-sub-item"><span data-i18n="nav_rev_summary">Revenue Summary</span></a>
+      <a href="#financials" class="menu-sub-item"><span data-i18n="nav_expenses_team">Expenses & Team</span></a>
+      <a href="#financials" class="menu-sub-item"><span data-i18n="nav_profit_cash">Profitability & Cash Flow</span></a>
+      <a href="#team" class="menu-item" data-section="team"><span class="menu-icon">◇</span> <span data-i18n="nav_ops_team">Operations & Team</span></a>
     </div>
 
     <div class="menu-group">
-      <span class="menu-group-label">Growth & Strategy</span>
-      <a href="#worldcup" class="menu-item" data-section="worldcup"><span class="menu-icon">◈</span> World Cup 2030</a>
-      <a href="#marketing" class="menu-item" data-section="marketing"><span class="menu-icon">◇</span> Marketing & Sales</a>
-      <a href="#marketing" class="menu-sub-item">Digital Strategy</a>
-      <a href="#marketing" class="menu-sub-item">Partnerships</a>
-      <a href="#invest" class="menu-item" data-section="invest"><span class="menu-icon">◇</span> Investment Highlights</a>
+      <span class="menu-group-label" data-i18n="nav_group_growth">Growth & Strategy</span>
+      <a href="#worldcup" class="menu-item" data-section="worldcup"><span class="menu-icon">◈</span> <span data-i18n="nav_worldcup">World Cup 2030</span></a>
+      <a href="#marketing" class="menu-item" data-section="marketing"><span class="menu-icon">◇</span> <span data-i18n="nav_marketing_sales">Marketing & Sales</span></a>
+      <a href="#marketing" class="menu-sub-item"><span data-i18n="nav_digital_strategy">Digital Strategy</span></a>
+      <a href="#marketing" class="menu-sub-item"><span data-i18n="nav_partnerships">Partnerships</span></a>
+      <a href="#invest" class="menu-item" data-section="invest"><span class="menu-icon">◇</span> <span data-i18n="nav_invest">Investment Highlights</span></a>
     </div>
 
     <div class="menu-group">
       <span class="menu-group-label">&nbsp;</span>
-      <a href="#contact" class="menu-item" data-section="contact"><span class="menu-icon">◈</span> Contact</a>
+      <a href="#contact" class="menu-item" data-section="contact"><span class="menu-icon">◈</span> <span data-i18n="nav_contact">Contact</span></a>
     </div>
 
   </div>
@@ -735,10 +845,10 @@ body.edit-mode [data-field]:focus {
     <div class="hero-label" data-field="hero_label">Bouznika, Morocco</div>
     <h1 class="hero-title" data-field="hero_title">Villa Dija</h1>
     <p class="hero-subtitle" data-field="hero_subtitle">A Luxury Wellness Guesthouse</p>
-    <p class="hero-tagline">Where the Atlantic Meets Serenity</p>
+    <p class="hero-tagline" data-i18n="hero_tagline">Where the Atlantic Meets Serenity</p>
   </div>
   <div class="hero-scroll">
-    <span>Scroll</span>
+    <span data-i18n="ui_scroll">Scroll</span>
     <div class="hero-scroll-line"></div>
   </div>
 </section>
@@ -1397,6 +1507,225 @@ const DB_PATH = "villabahia-v2";
 })();
 
 // ============================================
+
+// ============================================
+// I18N (FR/EN) — Firebase-aware, no runtime MT
+// ============================================
+const I18N = (function(){
+  const LS_KEY = 'villaDija_lang';
+  let currentLang = (localStorage.getItem(LS_KEY) || 'en').toLowerCase();
+  if (currentLang !== 'fr' && currentLang !== 'en') currentLang = 'en';
+
+  // Raw content from Firebase (string OR {en,fr})
+  const contentStore = {};
+
+  // Minimal UI strings (not stored in Firebase)
+  const uiStrings = {
+    lang_header: { en: 'Language', fr: 'Langue' },
+    nav_group_intro: { en: 'Introduction', fr: 'Introduction' },
+    nav_overview: { en: 'Overview', fr: 'Aperçu' },
+    nav_exec_summary: { en: 'Executive Summary', fr: 'Résumé exécutif' },
+    nav_group_asset: { en: 'The Asset', fr: "L'actif" },
+    nav_resort: { en: 'The Resort', fr: 'Le resort' },
+    nav_resort_video: { en: 'Resort Video', fr: 'Vidéo du resort' },
+    nav_location: { en: 'Strategic Location', fr: 'Localisation stratégique' },
+    nav_property: { en: 'The Property', fr: 'La propriété' },
+    nav_config_amenities: { en: 'Configuration & Amenities', fr: 'Configuration & équipements' },
+    nav_collection: { en: 'The Collection', fr: 'La collection' },
+    nav_spa_wellness: { en: 'Spa & Wellness', fr: 'Spa & bien-être' },
+    nav_rituals: { en: 'Villa Dija Rituals', fr: 'Villa Dija Rituals' }, // keep brand
+    nav_group_business: { en: 'Business Model', fr: 'Modèle économique' },
+    nav_revenue_streams: { en: 'Revenue Streams', fr: 'Sources de revenus' },
+    nav_stream1: { en: 'Stream 01 — Private Hire', fr: 'Stream 01 — Location privative' },
+    nav_stream2: { en: 'Stream 02 — Wellness Retreats', fr: 'Stream 02 — Retraites bien-être' },
+    nav_personas: { en: 'Guest Personas', fr: 'Profils clients' },
+    nav_group_financials: { en: 'Financials', fr: 'Finances' },
+    nav_fin_overview: { en: 'Financial Overview', fr: 'Aperçu financier' },
+    nav_rev_summary: { en: 'Revenue Summary', fr: 'Synthèse des revenus' },
+    nav_expenses_team: { en: 'Expenses & Team', fr: 'Dépenses & équipe' },
+    nav_profit_cash: { en: 'Profitability & Cash Flow', fr: 'Rentabilité & trésorerie' },
+    nav_ops_team: { en: 'Operations & Team', fr: 'Opérations & équipe' },
+    nav_group_growth: { en: 'Growth & Strategy', fr: 'Croissance & stratégie' },
+    nav_worldcup: { en: 'World Cup 2030', fr: 'Coupe du Monde 2030' },
+    nav_marketing_sales: { en: 'Marketing & Sales', fr: 'Marketing & ventes' },
+    nav_digital_strategy: { en: 'Digital Strategy', fr: 'Stratégie digitale' },
+    nav_partnerships: { en: 'Partnerships', fr: 'Partenariats' },
+    nav_invest: { en: 'Investment Highlights', fr: "Points forts d'investissement" },
+    nav_contact: { en: 'Contact', fr: 'Contact' },
+    hero_tagline: { en: 'Where the Atlantic Meets Serenity', fr: "Là où l’Atlantique rencontre la sérénité" },
+    ui_scroll: { en: 'Scroll', fr: 'Scroll' } // keep common UI term
+  };
+
+  function getLang(){ return currentLang; }
+
+  function normalizeValue(raw){
+    if (raw == null) return null;
+    if (typeof raw === 'string') return raw;
+    if (typeof raw === 'object') return raw;
+    return String(raw);
+  }
+
+  function pickLocalized(raw, fallbackHtml){
+    const v = normalizeValue(raw);
+    if (v == null) return (fallbackHtml != null ? fallbackHtml : '');
+    if (typeof v === 'string') return v;
+    // object form
+    return v[currentLang] || v.en || v.fr || (fallbackHtml != null ? fallbackHtml : '');
+  }
+
+  // Debounced render (prevents loops during frequent firebase updates)
+  let raf = 0;
+  function scheduleRender(){
+    if (raf) cancelAnimationFrame(raf);
+    raf = requestAnimationFrame(() => {
+      raf = 0;
+      renderFields();
+      renderUiStrings();
+      syncLangMenuState();
+    });
+  }
+
+  function renderFields(){
+    document.querySelectorAll('[data-field]').forEach(el => {
+      const key = el.dataset.field;
+      if (!(key in contentStore)) return;
+      const fallback = el.getAttribute('data-i18n-fallback') || null;
+      const localized = pickLocalized(contentStore[key], fallback);
+      if (el.innerHTML !== localized) el.innerHTML = localized;
+    });
+  }
+
+  function renderUiStrings(){
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+      const key = el.getAttribute('data-i18n');
+      const dict = uiStrings[key];
+      if (!dict) return;
+      const txt = dict[currentLang] || dict.en || dict.fr;
+      if (txt != null && el.textContent !== txt) el.textContent = txt;
+    });
+    document.querySelectorAll('[data-i18n-html]').forEach(el => {
+      const key = el.getAttribute('data-i18n-html');
+      const dict = uiStrings[key];
+      if (!dict) return;
+      const html = dict[currentLang] || dict.en || dict.fr;
+      if (html != null && el.innerHTML !== html) el.innerHTML = html;
+    });
+  }
+
+  function setLanguage(lang){
+    const next = (lang || '').toLowerCase();
+    if (next !== 'en' && next !== 'fr') return;
+    currentLang = next;
+    localStorage.setItem(LS_KEY, currentLang);
+    scheduleRender();
+  }
+
+  function setAllRaw(obj){
+    if (!obj || typeof obj !== 'object') return;
+    Object.keys(obj).forEach(k => { contentStore[k] = obj[k]; });
+    scheduleRender();
+  }
+
+  function setRaw(key, value){
+    if (!key) return;
+    contentStore[key] = value;
+    scheduleRender();
+  }
+
+  function getRaw(key){ return contentStore[key]; }
+  function getStore(){ return contentStore; }
+
+  // ===== Language menu UI =====
+  const btn = () => document.getElementById('langBtn');
+  const menu = () => document.getElementById('langMenu');
+
+  function openMenu(){
+    const m = menu(); const b = btn();
+    if (!m || !b) return;
+    m.classList.add('open');
+    m.setAttribute('aria-hidden', 'false');
+    b.setAttribute('aria-expanded', 'true');
+    // focus first option for accessibility
+    const first = m.querySelector('.lang-option');
+    if (first) first.focus({ preventScroll:true });
+  }
+
+  function closeMenu(){
+    const m = menu(); const b = btn();
+    if (!m || !b) return;
+    m.classList.remove('open');
+    m.setAttribute('aria-hidden', 'true');
+    b.setAttribute('aria-expanded', 'false');
+  }
+
+  function toggleMenu(){
+    const m = menu();
+    if (!m) return;
+    if (m.classList.contains('open')) closeMenu(); else openMenu();
+  }
+
+  function syncLangMenuState(){
+    const m = menu();
+    if (!m) return;
+    m.querySelectorAll('.lang-option').forEach(opt => {
+      const lang = opt.getAttribute('data-lang');
+      const active = (lang === currentLang);
+      opt.classList.toggle('active', active);
+      opt.setAttribute('aria-checked', active ? 'true' : 'false');
+    });
+  }
+
+  function initMenuEvents(){
+    const b = btn();
+    const m = menu();
+    if (!b || !m) return;
+
+    b.addEventListener('click', (e) => { e.stopPropagation(); toggleMenu(); });
+
+    m.addEventListener('click', (e) => {
+      const target = e.target.closest('.lang-option');
+      if (!target) return;
+      const lang = target.getAttribute('data-lang');
+      setLanguage(lang);
+      closeMenu();
+    });
+
+    document.addEventListener('click', (e) => {
+      const mm = menu(); const bb = btn();
+      if (!mm || !bb) return;
+      if (!mm.classList.contains('open')) return;
+      if (mm.contains(e.target) || bb.contains(e.target)) return;
+      closeMenu();
+    });
+
+    document.addEventListener('keydown', (e) => {
+      const mm = menu();
+      if (!mm || !mm.classList.contains('open')) return;
+      if (e.key === 'Escape') closeMenu();
+    });
+
+    syncLangMenuState();
+  }
+
+  function init(){
+    initMenuEvents();
+    // initial render for UI labels
+    scheduleRender();
+  }
+
+  return {
+    init,
+    getLang,
+    setLanguage,
+    setAllRaw,
+    setRaw,
+    getRaw,
+    getStore,
+    pickLocalized
+  };
+})();
+
+
 // VILLA BAHIA COLLABORATIVE SYSTEM
 // ============================================
 const VB = (function() {
@@ -1515,10 +1844,7 @@ const VB = (function() {
       if (data) {
         isLoadingFromFirebase = true;
         Object.keys(data).forEach(field => {
-          const el = document.querySelector('[data-field="' + field + '"]');
-          if (el && el.innerHTML !== data[field]) {
-            el.innerHTML = data[field];
-          }
+          I18N.setRaw(field, data[field]);
         });
         isLoadingFromFirebase = false;
         updateSyncTime();
@@ -1539,10 +1865,8 @@ const VB = (function() {
       const field = snap.key;
       const value = snap.val();
       const el = document.querySelector('[data-field="' + field + '"]');
-      if (el && el.innerHTML !== value) {
-        el.innerHTML = value;
-        highlightRemoteEdit(el);
-      }
+      I18N.setRaw(field, value);
+      if (el) highlightRemoteEdit(el);
       updateSyncTime();
     });
   }
@@ -1568,9 +1892,25 @@ const VB = (function() {
   }
 
   function syncToFirebase(field, value) {
+    const lang = I18N.getLang();
+    const existing = I18N.getRaw(field);
+    let payload = value;
+
+    if (existing && typeof existing === 'object' && !Array.isArray(existing)) {
+      payload = Object.assign({}, existing);
+      payload[lang] = value;
+    } else if (lang !== 'en') {
+      // upgrade string -> {en, fr} when editing in FR (backward compatible)
+      const baseEn = (typeof existing === 'string') ? existing : (originalContent[field] || '');
+      payload = { en: baseEn, fr: value };
+    }
+
+    // Update UI immediately (even before server ack)
+    I18N.setRaw(field, payload);
+
     if (isOnline && contentRef) {
       setStatus('syncing');
-      contentRef.child(field).set(value).then(() => {
+      contentRef.child(field).set(payload).then(() => {
         setStatus('online');
         updateSyncTime();
         configRef.update({
@@ -1578,18 +1918,19 @@ const VB = (function() {
           lastEditor: SESSION_ID,
           version: firebase.database.ServerValue.increment(1)
         });
-        // Remove from pending
         delete pendingChanges[field];
       }).catch(err => {
         console.warn('Sync failed for', field, err);
-        pendingChanges[field] = value;
+        pendingChanges[field] = payload;
         saveToLocalStorage();
       });
     } else {
-      pendingChanges[field] = value;
+      pendingChanges[field] = payload;
       saveToLocalStorage();
     }
   }
+
+
 
   function syncPendingChanges() {
     if (!isOnline || !contentRef) return;
@@ -1613,11 +1954,7 @@ const VB = (function() {
   // ============================================
   function saveToLocalStorage() {
     try {
-      const data = {};
-      document.querySelectorAll('[data-field]').forEach(el => {
-        data[el.dataset.field] = el.innerHTML;
-      });
-      localStorage.setItem('vb_content', JSON.stringify(data));
+      localStorage.setItem('vb_content', JSON.stringify(I18N.getStore()));
       localStorage.setItem('vb_pending', JSON.stringify(pendingChanges));
       localStorage.setItem('vb_timestamp', new Date().toISOString());
     } catch(e) { console.warn('LocalStorage save failed:', e); }
@@ -1627,10 +1964,7 @@ const VB = (function() {
     try {
       const data = JSON.parse(localStorage.getItem('vb_content'));
       if (data) {
-        Object.keys(data).forEach(field => {
-          const el = document.querySelector('[data-field="' + field + '"]');
-          if (el) el.innerHTML = data[field];
-        });
+        I18N.setAllRaw(data);
         showToast('📦 Chargé depuis le cache local', 'info');
       }
       const pending = JSON.parse(localStorage.getItem('vb_pending'));
@@ -1869,7 +2203,7 @@ const VB = (function() {
 })();
 
 // Initialize on DOM ready
-document.addEventListener('DOMContentLoaded', VB.init);
+document.addEventListener('DOMContentLoaded', () => { I18N.init(); VB.init(); });
 </script>
 </body>
 </html>
